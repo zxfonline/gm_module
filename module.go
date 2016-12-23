@@ -166,8 +166,8 @@ func call(f ast.Expr) (string, interface{}, error) {
 
 //类似gerror.SysError 结构
 type Response struct {
-	Code   int32       `json:"ret"`
-	Result interface{} `json:"result,omitempty"`
+	Code   gerror.ErrorType `json:"ret"`
+	Result interface{}      `json:"result,omitempty"`
 }
 
 //注册gm工具类
