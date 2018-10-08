@@ -167,8 +167,9 @@ func call(f ast.Expr) (string, interface{}, error) {
 
 //类似gerror.SysError 结构
 type Response struct {
-	Code   gerror.ErrorType `json:"ret"`
-	Result interface{}      `json:"result,omitempty"`
+	Code    gerror.ErrorType `json:"ret"`
+	Result  interface{}      `json:"result,omitempty"`
+	Content string           `json:"msg"`
 }
 
 //注册gm工具类
@@ -180,7 +181,7 @@ func HandleCMD(exp string) (rs interface{}) {
 	defer func() {
 		if e := recover(); e != nil {
 			Logger.Warnf("\nHandleGM(exp=%s),error:%+v", exp, e)
-			rs = gerror.NewError(gerror.SERVER_CMSG_ERROR, "invalid cmd exp")
+			rs = gerror.NewError(gerror.SERVER_CMSG_ERROR, fmt.Sprintf("%v", e))
 		}
 	}()
 	if f, perr := parser.ParseExpr(exp); perr == nil {
