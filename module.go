@@ -19,7 +19,7 @@ import (
 
 var (
 	h      reflect.Value
-	Logger *golog.Logger = golog.New("GMModule")
+	logger *golog.Logger = golog.New("GMModule")
 )
 
 func CastParam(kind reflect.Kind, param string) (reflect.Value, error) {
@@ -180,14 +180,14 @@ func RegistHander(r reflect.Value) {
 func HandleCMD(exp string) (rs interface{}) {
 	defer func() {
 		if e := recover(); e != nil {
-			Logger.Warnf("\nHandleGM(exp=%s),error:%+v", exp, e)
+			logger.Warnf("\nHandleGM(exp=%s),error:%+v", exp, e)
 			rs = gerror.NewError(gerror.SERVER_CMSG_ERROR, fmt.Sprintf("%v", e))
 		}
 	}()
 	if f, perr := parser.ParseExpr(exp); perr == nil {
 		funcn, resp, err := call(f)
 		if err != nil {
-			Logger.Warnf("\n\tHandleGM[exp=%s]\n\tfunc:%s\n\terror:%+v", exp, funcn, err)
+			logger.Warnf("\n\tHandleGM[exp=%s]\n\tfunc:%s\n\terror:%+v", exp, funcn, err)
 			switch err.(type) {
 			case *gerror.SysError:
 				rs = err.(*gerror.SysError)
@@ -197,7 +197,7 @@ func HandleCMD(exp string) (rs interface{}) {
 				rs = gerror.NewError(gerror.SERVER_CMSG_ERROR, fmt.Sprintf("%v", err))
 			}
 		} else {
-			Logger.Infof("\n\tHandleGM[exp=%s]\n\tfunc:%s\n\trespond:%+v", exp, funcn, resp)
+			logger.Infof("\n\tHandleGM[exp=%s]\n\tfunc:%s\n\trespond:%+v", exp, funcn, resp)
 			switch resp.(type) {
 			case *gerror.SysError:
 				rs = resp
@@ -208,7 +208,7 @@ func HandleCMD(exp string) (rs interface{}) {
 			}
 		}
 	} else {
-		Logger.Warnf("\nHandleGM(exp=%s),error:%+v", exp, perr)
+		logger.Warnf("\nHandleGM(exp=%s),error:%+v", exp, perr)
 		rs = gerror.NewError(gerror.SERVER_CMSG_ERROR, "invalid cmd exp")
 	}
 	return
